@@ -1,0 +1,33 @@
+var
+	m,d,i,n,t,tail,cnt:longint;
+	a,queue:array[1..200000]of longint;
+	c:char;
+	
+	function find(x:longint):longint;
+	var
+		l,r,m:longint;
+	begin
+		l:=1;
+		r:=cnt;
+		while l<r do begin
+			m:=(l+r)shr 1;
+			if queue[m]<x then l:=m+1 else r:=m;
+		end;
+		exit(queue[l]);
+	end;
+begin
+	readln(m,d);
+	for i:=1 to m do begin
+		readln(c,n);
+		if c='A' then begin
+			inc(cnt);
+			a[cnt]:=n+t;
+			while (tail>0)and(a[cnt]>=a[queue[tail]]) do dec(tail);
+			inc(tail);
+			queue[tail]:=cnt;
+		end else begin
+			t:=a[find(tail-n+1)];
+			writeln(t);
+		end;
+	end;
+end.

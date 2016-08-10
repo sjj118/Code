@@ -1,0 +1,45 @@
+var
+  b,c:string;
+  len:longint;
+
+  procedure z(p,s:string);
+  var
+    d,e,i,l,r:longint;
+    a,f,k:string;
+  begin
+    e:=pos(p,s);
+    if e>1 then begin
+      a:=copy(s,1,e-1);
+      l:=maxlongint;r:=-maxlongint;
+      for i:=1 to length(a) do begin
+        d:=pos(a[i],c);
+        if d<l then l:=d;
+        if d>r then r:=d;
+      end;
+      k:=copy(c,l,r-l+1);
+      f:=k[length(k)];
+      write(f);
+      z(f,a);
+    end;
+    if e<length(s) then begin
+      a:=copy(s,e+1,length(s)-e);
+      l:=maxlongint;r:=-maxlongint;
+      for i:=1 to length(a) do begin
+        d:=pos(a[i],c);
+        if d<l then l:=d;
+        if d>r then r:=d;
+      end;
+      k:=copy(c,l,r-l+1);
+      f:=k[length(k)];
+      write(f);
+      z(f,a);
+    end;
+  end;
+
+
+begin
+  readln(b);
+  readln(c);
+  write(c[length(c)]);
+  z(c[length(c)],b);
+end.

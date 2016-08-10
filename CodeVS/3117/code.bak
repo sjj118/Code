@@ -1,0 +1,38 @@
+type
+  list=array[1..1000]of longint;
+var
+  s:ansistring;
+  a,b,c:list;
+  i,j,k:longint;
+  lena,lenb,len:longint;
+begin
+  readln(s);
+  fillchar(a,sizeof(a),0);
+  fillchar(b,sizeof(b),0);
+  fillchar(c,sizeof(c),0);
+  for i:=length(s) downto 1 do begin
+    if s[i]=' ' then begin
+      j:=i;
+      lena:=length(s)-i;
+      break;
+    end;
+    val(s[i],a[length(s)-i+1]);
+  end;
+  for i:=j-1 downto 1 do begin
+    val(s[i],b[j-i]);
+  end;
+  lenb:=j-1;
+  if lena>lenb then len:=lena else len:=lenb;
+  for i:=1 to lena do begin
+    for j:=1 to lenb do begin
+      inc(c[i+j-1],a[i]*b[j]);
+    end;
+  end;
+  for i:=1 to 999 do begin
+    inc(c[i+1],c[i] div 10);
+    c[i]:=c[i] mod 10;
+  end;
+  i:=1000;
+  while(c[i]=0)do dec(i);
+  for j:=i downto 1 do write(c[i]);
+end.

@@ -1,0 +1,17 @@
+var
+  n,m,i,j,x,y:longint;
+  f:array[-2..17,-2..17]of longint;
+begin
+  readln(n,m,x,y);
+  f[0,1]:=1;
+  f[1,0]:=0;
+  f[x,y]:=-1;f[x-2,y+1]:=-1;f[x-2,y-1]:=-1;f[x+2,y+1]:=-1;f[x+2,y-1]:=-1;f[x+1,y+2]:=-1;f[x+1,y-2]:=-1;f[x-1,y+2]:=-1;f[x-1,y-2]:=-1;
+  for i:=1 to n do begin
+    for j:=1 to m do begin
+	  if(f[i,j]=-1)then f[i,j]:=0 else begin
+	    f[i,j]:=f[i-1,j]+f[i,j-1];
+	  end;
+	end;
+  end;
+  writeln(f[n,m]);
+end.

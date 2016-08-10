@@ -1,0 +1,69 @@
+type
+	normal=record
+		p,q:int64;
+	end;
+var
+	n,m,i,j:longint;
+	c:char;
+	fen,e,zero:normal;
+	p:array[0..50,0..50]of normal;
+	map:array[0..50,0..50]of char;
+	
+	function gcd(a,b:int64):int64;
+	begin
+		if b=0 then exit(a);
+		exit(gcd(b,a mod b));
+	end;
+	
+	procedure updata(var no:normal);
+	var
+		d:int64;
+	begin
+		d:=gcd(no.p,no.q);
+		no.p:=no.p div d;
+		no.q:=no.q div d;
+	end;
+	
+	function cheng(a,b:normal):normal;
+	begin
+		cheng.p:=a.p*b.p;
+		cheng.q:=a.q*b.q;
+	end;
+	
+	function jia(a,b:normal):normal;
+	var
+		d:int64;
+	begin
+		d:=gcd(a.q,b.q);
+		jia.q:=a.q*b.q div d;
+		jia.p:=(a.p*b.q+b.p*a.q)div d;
+	end;
+begin
+	zero.p:=0;
+	zero.q:=1;
+	e.p:=1;
+	e.q:=1;
+	fen.p:=1;
+	fen.q:=2;
+	for i:=0 to 50 do for j:=0 to 50 do p[i,j]:=zero;
+	p[0,0]:=e;
+	readln(n,m);
+	for i:=0 to n-1 do begin
+		for j:=0 to i do begin
+			read(c);
+			while c=' ' do read(c);
+			map[i,j]:=c;
+		end;
+		readln;
+	end;
+	for i:=0 to n-1 do begin
+		for j:=0 to i do begin
+			if map[i,j]='*' then begin
+				p[i+1,j]:=jia(p[i+1,j],cheng(p[i,j],fen));
+				p[i+1,j+1]:=jia(p[i+1,j+1],cheng(p[i,j],fen));
+			end else p[i+2,j+1]:=jia(p[i+2,j+1],p[i,j]);
+		end;
+	end;
+	updata;
+	writeln(p[n,m].p,'/',p[n,m].q);
+end.

@@ -1,0 +1,24 @@
+var
+  a,b,c,f:array[1..1000000]of longint;
+  n,p,i,j,k,m:longint;
+
+  function max(a,b:longint):longint;
+  begin
+    if a>b then max:=a else max:=b;
+  end;
+begin
+  readln(n,p);
+  for i:=1 to n do read(a[i]);
+  b[1]:=a[1]mod p;
+  f[1]:=max(a[1],0)mod p;
+  for i:=2 to n do begin
+    b[i]:=max(b[i-1],f[i-1]+a[i])mod p;
+	f[i]:=max(0,f[i-1]+a[i])mod p;
+  end;
+  c[1]:=b[1];
+  m:=c[1]+b[1];
+  for i:=3 to n do begin
+    c[i]:=max(m,c[i-1]+b[i-1])mod p;
+  end;
+  write(c[n] mod p);
+end.

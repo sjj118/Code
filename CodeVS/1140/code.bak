@@ -1,0 +1,33 @@
+var
+  s,t,w,c:longint;
+  a:array[1..26]of char;
+
+  function max(a,b:longint):longint;
+  begin
+    if(a>b)then max:=a else max:=b;
+  end;
+
+  function add(x:longint):longint;
+  var i,j:longint;
+  begin
+    for i:=ord(a[x])+1 to t do begin
+	  if c=5 then exit;
+      if(x<w)then add(x+1);
+    end;
+    if(c=5)then exit;
+    if(ord(a[x])+w-x<t)then begin
+      a[x]:=chr(ord(a[x])+1);
+      for i:=x+1 to w do
+        a[i]:=chr(ord(a[i-1])+1);
+	  for j:=1 to w-1 do write(a[j]);
+      writeln(a[w]);
+      inc(c);
+    end;
+  end;
+  readln(s,t,w);
+  readln(a);
+  c:=0;
+  inc(s,96);
+  inc(t,96);
+  add(1);
+end.

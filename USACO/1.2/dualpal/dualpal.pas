@@ -1,0 +1,53 @@
+{
+ID: sjj22451
+LANG: PASCAL
+PROB: dualpal
+}
+type
+  big=record
+    len:longint;
+	data:array[1..100]of byte;
+  end;
+var
+  n,s,i,k:longint;
+
+  function change(a,b:longint):big;
+  var
+    i:longint;
+  begin
+    with change do begin
+	  len:=0;
+	  fillchar(data,sizeof(data),0);
+	  while a>0 do begin
+	    inc(len);
+		data[len]:=a mod b;
+		a:=a div b;
+	  end;
+	end;
+  end;
+
+  function check(a:big):boolean;
+  var
+    i:longint;
+  begin
+    with a do begin
+	  for i:=1 to len div 2 do if data[i]<>data[len-i+1] then exit(false);
+	end;
+	exit(true);
+  end;
+begin
+  assign(input,'dualpal.in');reset(input);assign(output,'dualpal.out');rewrite(output);
+  readln(n,s);
+  while n>0 do begin
+    dec(n);
+	repeat
+	  inc(s);
+	  k:=0;
+	  for i:=2 to 10 do begin
+	    if check(change(s,i)) then inc(k);
+	  end;
+	until k>1;
+	writeln(s);
+  end;
+  close(input);close(output);
+end.

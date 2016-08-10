@@ -1,0 +1,30 @@
+var
+	f:array[1..31,0..30]of int64;
+	root:array[1..30,1..30]of longint;
+	s:array[1..30]of longint;
+	i,j,n,k:longint;
+	
+	procedure first(l,r:longint);
+	var
+		m:longint;
+	begin
+		m:=root[l,r];
+		writeln(m);
+		if m>l then first(l,m-1);
+		if m<r then first(m+1,r);
+	end;
+begin
+	readln(n);
+	for i:=1 to n do read(s[i]);
+	for i:=0 to n do f[i+1,i]:=1;
+	for i:=1 to n do f[i,i]:=s[i];
+        for i:=1 to n do root[i,i]:=i;
+	for i:=n-1 downto 1 do
+		for j:=i+1 to n do
+			for k:=i to j do if f[i,k-1]*f[k+1,j]+s[k]>f[i,j] then begin
+                                f[i,j]:=f[i,k-1]*f[k+1,j]+s[k];
+                                root[i,j]:=k;
+                        end;
+	writeln(f[1,n]);
+	first(1,n);
+end.

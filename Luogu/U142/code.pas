@@ -1,0 +1,54 @@
+const
+  mo:longint=1000000000+7;
+var
+  t,i,j,h:longint;
+  a:int64;
+  s:string;
+
+  function facta(a,b,c:longint):int64;
+  var
+    i,j:longint;
+  begin
+    facta:=1;
+	j:=1;
+	i:=a;
+    for i:=a to b do begin
+	  facta:=facta*i;
+	  while facta mod j=0 do begin
+	    if j<=c then begin
+		  facta:=facta div j;
+		  inc(j);
+		end else break;
+	  end;
+	end;
+        for i:=j to c do facta:=facta div i;
+  end;
+
+  function max(a,b:longint):longint;
+  begin
+    if a>b then max:=a else max:=b;
+  end;
+
+  function min(a,b:longint):longint;
+  begin
+    if a<b then min:=a else min:=b;
+  end;
+
+  function C(m,n:longint):int64;
+  begin
+    C:=facta(max(n+1,m-n+1),m,min(n,m-n));
+  end;
+begin
+  readln(t);
+  for i:=1 to t do begin
+    readln(s);
+	h:=-1;
+	for j:=1 to length(s) do begin
+	  h:=h+ord(s[j])-ord('a')+1;
+	end;
+        a:=C(h,length(s)-1);
+        if h>=26 then a:=a-(length(s))*C(h-26,length(s)-1);
+        a:=a mod mo;
+        if a=0 then writeln(mo) else writeln(a-1);
+  end;
+end.

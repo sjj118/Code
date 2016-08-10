@@ -1,0 +1,68 @@
+var
+  i,l,j,ans,k,top,tops:longint;
+  a,stack:array[1..100000]of char;
+  zero,all:array[0..100001]of longint;
+
+  procedure put(c:char);
+  begin
+    inc(top);
+	stack[top]:=c;
+  end;
+
+  function getc():char;
+  begin
+    getc:=stack[top];
+	dec(top);
+  end;
+begin
+  readln(l);
+  for i:=1 to l do read(a[i]);
+  top:=0;
+  tops:=1;
+  zero[1]:=1;all[1]:=2;
+  for i:=1 to l do begin
+    if a[i]='(' then put(a[i])
+	else if a[i]='*' then begin
+	  put(a[i]);
+	  inc(tops);
+	  zero[tops]:=1;all[tops]:=2;
+	end
+	else if a[i]='+' then begin
+	  while stack[top]='*' do begin
+		dec(tops);
+		zero[tops]:=(zero[tops]*all[tops+1]+all[tops]*zero[tops+1]-zero[tops]*zero[tops+1])mod 10007 ;
+		all[tops]:=all[tops]*all[tops+1]mod 10007;
+		dec(top);
+	  end;
+	  put(a[i]);
+	  inc(tops);
+	  zero[tops]:=1;all[tops]:=2;
+	end
+	else if a[i]=')' then begin
+	  while stack[top]<>'(' do begin
+	    if getc='*' then begin
+		  dec(tops);
+		  zero[tops]:=(zero[tops]*all[tops+1]+all[tops]*zero[tops+1]-zero[tops]*zero[tops+1])mod 10007;
+		  all[tops]:=all[tops]*all[tops+1]mod 10007;
+		end else begin
+		  dec(tops);
+		  zero[tops]:=zero[tops]*zero[tops+1]mod 10007;
+		  all[tops]:=all[tops]*all[tops+1]mod 10007;
+		end;
+	  end;
+          dec(top);
+	end;
+  end;
+  while tops>0 do begin
+	if getc='*' then begin
+	  dec(tops);
+	  zero[tops]:=(zero[tops]*all[tops+1]+all[tops]*zero[tops+1]-zero[tops]*zero[tops+1])mod 10007;
+	  all[tops]:=all[tops]*all[tops+1]mod 10007;
+	end else begin
+	  dec(tops);
+	  zero[tops]:=zero[tops]*zero[tops+1]mod 10007;
+	  all[tops]:=all[tops]*all[tops+1]mod 10007;
+	end;
+  end;
+  writeln(zero[1]);
+end.

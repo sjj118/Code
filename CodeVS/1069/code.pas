@@ -1,0 +1,108 @@
+type
+	NodeType=record
+		rank,father:longint;
+	end;
+	SetType=array[1..20000]of NodeType;
+var
+	UFS:SetType;
+
+	n,m,i,x,y:longint;
+	a,b,c,d:array[1..100000]of longint;
+	
+	procedure make(root:longint);
+	begin
+		UFS[root].father:=root;
+		UFS[root].rank:=1;
+	end;
+	
+	procedure init;
+	var
+		i:longint;
+	begin
+		for i:=1 to 20000 do make(i);
+	end;
+	
+	function find(p:longint):longint;
+	begin
+		if UFS[p].father=p then exit(p);
+		UFS[p].father:=find(UFS[p].father);
+		exit(UFS[p].father);
+	end;
+
+	procedure union(a,b:longint);
+	var
+		x:longint;
+	begin
+		a:=find(a);
+		b:=find(b);
+		if UFS[a].rank<UFS[b].rank then begin
+			inc(UFS[b].rank);
+			UFS[a].father:=b;
+		end else begin
+			inc(UFS[a].rank);
+			UFS[b].father:=a;
+		end;
+	end;
+	
+	function judge(a,b:longint):boolean;
+	begin
+		exit(find(a)=find(b));
+	end;
+	
+
+
+	procedure qsort();
+
+    procedure sort(l,r: longint);
+      var
+         i,j,x,y: longint;
+      begin
+         i:=l;
+         j:=r;
+         x:=c[(l+r) div 2];
+         repeat
+           while c[i]>x do
+            inc(i);
+           while x>c[j] do
+            dec(j);
+           if not(i>j) then
+             begin
+                y:=a[i];
+                a[i]:=a[j];
+                a[j]:=y;
+				y:=b[i];
+                b[i]:=b[j];
+                b[j]:=y;
+				y:=c[i];
+                c[i]:=c[j];
+                c[j]:=y;
+                inc(i);
+                j:=j-1;
+             end;
+         until i>j;
+         if l<j then
+           sort(l,j);
+         if i<r then
+           sort(i,r);
+      end;
+
+    begin
+       sort(1,m);
+    end;
+begin
+	readln(n,m);
+	for i:=1 to m do readln(a[i],b[i],c[i]);
+	qsort;
+    init;
+	for i:=1 to m do if not judge(a[i],b[i]) then begin
+		x:=find(a[i]);
+		y:=find(b[i]);
+		if d[y]<>0 then union(x,d[y]);
+		if d[x]<>0 then union(y,d[x]);
+		x:=find(x);
+		y:=find(y);
+		d[x]:=y;
+		d[y]:=x;
+	end else begin writeln(c[i]); exit; end;
+	writeln(0);
+end.

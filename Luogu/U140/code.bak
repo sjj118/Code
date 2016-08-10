@@ -1,0 +1,49 @@
+var
+  n,m,k,q:longint;
+  s,ans,l1,l2:int64;
+
+  function max(a,b:longint):longint;
+  begin
+    if a>b then max:=a else max:=b;
+  end;
+
+  function min(a,b:longint):longint;
+  begin
+    if a>b then min:=b else min:=a;
+  end;
+
+  {function count(x,y:longint):int64;
+  var
+    i,j:longint;
+    t:int64;
+  begin
+    //t:=x*(x-1)div 2;
+    //t:=t*y*(y-1)div 2;
+    //exit(t);
+  end; }
+begin
+  readln(n,m,k);
+  for l1:=1 to min(max(n,m),trunc(sqrt(k))) do begin
+	if (l1<=n) then begin
+	  l2:=min(k div l1,m);
+	  q:=k-l1*l2;
+          //s:=1;
+	  s:=l1*(l1-1)div 2*l2*(l2-1)div 2;
+	  if q>1 then
+	  if m>l2 then s:=s+l2*(q-1)
+	  else s:=s+l1*(q-1)
+	end;
+	if s>ans then ans:=s;
+	if (l1<=m) then begin
+	  l2:=min(k div l1,n);
+	  q:=k-l1*l2;
+          //s:=1;
+	  s:=l1*(l1-1)div 2*l2*(l2-1)div 2;
+	  if q>1 then
+	  if m>l2 then s:=s+l2*(q-1)
+	  else s:=s+l1*(q-1);
+	end;
+	if s>ans then ans:=s;
+  end;
+  writeln(ans);
+end.

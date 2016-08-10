@@ -1,0 +1,11 @@
+var
+  i,j,n:longint;
+begin
+  readln(n);
+  for i:=1 to n do begin
+    for j:=1 to n-1 do write(' ');
+	write('/');
+	for j:=1 to i-1 do write('-');
+	writeln('\');
+  end;
+end;

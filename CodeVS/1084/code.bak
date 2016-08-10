@@ -1,0 +1,24 @@
+var
+  c:char;
+  x,y,z:longint;
+  a,b:array[1..5000]of longint;
+  i:longint;
+begin
+  read(c);
+  if c='E' then begin
+    writeln('0:0');
+	writeln;
+	writeln('0:0');
+  end;
+  z:=1;
+  while c<>'E' do begin
+    if c='W' then begin inc(x); inc(a[z]); end else begin inc(y); inc(b[z]); end;
+	if x+y=11 then begin writeln(x,':',y); x:=0; y:=0; end;
+	if a[z]+b[z]=21 then inc(z);
+    read(c);
+  end;
+  if (x<>0) or (y<>0) then writeln(x,':',y);
+  writeln;
+  if (a[z]=0) and (b[z]=0) then dec(z);
+  for i:=1 to z do writeln(a[i],':',b[i]);
+end.

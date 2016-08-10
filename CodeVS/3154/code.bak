@@ -1,0 +1,28 @@
+var
+  a,b,len,i:longint;
+
+  function max(a,b:longint):longint;
+  begin
+    if a>b then max:=a else max:=b;
+  end;
+
+  function getw(a:longint):longint;
+  begin
+    getw:=trunc(ln(a)/ln(10))+1;
+  end;
+begin
+  readln(a,b);
+  len:=getw(max(a,b))+1;
+  len:=max(len,getw(a*b));
+  writeln(a:len);
+  writeln('*',b:len-1);
+  for i:=1 to len do write('-');
+  writeln;
+  if getw(b)=2 then begin
+    writeln(b mod 10*a:len);
+	writeln(b div 10*a:len-1);
+	for i:=1 to len do write('-');
+    writeln;
+  end;
+  write(a*b:len);
+end.

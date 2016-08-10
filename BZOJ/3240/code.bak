@@ -1,0 +1,89 @@
+const
+	mo=1000000007;
+type
+	bignum=array[-1..10000]of longint;
+var
+	m,n:bignum;
+	a,b,c,d:longint;
+	exp,x:bignum;
+	f1,e,f,g,h,k:int64;
+	
+	procedure scanfb(var x:bignum);
+	var
+		c:char;
+	begin
+		read(c);
+		while c=' ' do read(c);
+		repeat
+			inc(x[0]);
+			x[x[0]]:=ord(c)-ord('0');
+			if eoln then break;
+			read(c);
+		until c=' ';
+	end;
+	
+	procedure scanf(var x:longint);
+	var
+		c:char;
+	begin
+		read(c);
+		while c=' ' do read(c);
+		repeat
+			x:=x*10+ord(c)-ord('0');
+			if eoln then break;
+			read(c);
+		until c=' ';
+	end;
+	
+	function power(base,exp,mo:int64):int64;
+	begin
+		power:=1;
+		while exp>0 do begin
+			if exp and 1=1 then power:=power*base mod mo;
+			base:=base*base mod mo;
+			exp:=exp shr 1;
+		end;
+	end;
+
+	function bpower(base:int64;mo:int64):int64;
+	var
+		i:longint;
+	begin
+		bpower:=1;
+		while exp[0]>exp[-1] do begin
+			bpower:=bpower*power(base,exp[exp[0]],mo) mod mo;
+			base:=power(base,10,mo);
+			dec(exp[0]);
+		end;
+	end;
+	
+	function jian:bignum;
+	begin
+		jian:=x;
+		jian[jian[0]]:=jian[jian[0]]-1;
+		while jian[jian[0]]<0 do begin
+			jian[jian[0]]:=jian[jian[0]]+10;
+			jian[jian[0]-1]:=jian[jian[0]-1]-1;
+		end;
+		while exp[exp[-1]]=0 do dec(exp[-1]);
+	end;
+
+begin
+	scanfb(m);
+	scanfb(n);
+	scanf(a);
+	scanf(b);
+	scanf(c);
+	scanf(d);
+	x:=m;
+	exp:=jian;
+	e:=bpower(a,mo);
+	if a=1 then f:=e else f:=(e-1)*b mod mo*power(a-1,mo-2,mo)mod mo;
+	f1:=(e+f)mod mo;
+	g:=e*c mod mo;
+	h:=(e*d mod mo+f)mod mo;
+	x:=n;
+	exp:=jian;
+	k:=bpower(g,mo);
+	writeln((k*f1 mod mo+(k-1)*h mod mo*power(g-1,mo-2,mo)mod mo)mod mo);
+end.

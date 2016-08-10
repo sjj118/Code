@@ -1,0 +1,17 @@
+var
+	a,b:string;
+	
+	procedure sin(var a:string;var b:string);
+	var
+		s:string;
+	begin
+		readln(s);
+                writeln(pos(' ',s));
+		a:=copy(s,1,pos(s,' ')-1);
+		b:=copy(s,pos(s,' ')+1,length(s)-pos(s,' '));
+	end;
+begin
+	sin(a,b);
+	writeln(a);
+	writeln(b);
+end.

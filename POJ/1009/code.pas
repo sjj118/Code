@@ -1,0 +1,124 @@
+var
+  p:array[0..1001]of byte;
+  op:array[0..10000]of longint;
+  t:array[0..1001]of longint;
+  os:array[0..10000]of longint;
+  i,l,n,tail,p1,k,s:longint;
+
+  function max(a,b:longint):longint;
+  begin
+    if a>b then max:=a else max:=b;
+  end;
+
+  function find(l,r,k:longint):longint;
+  var
+    m:longint;
+  begin
+    if l=r then exit(l);
+    m:=(l+r) div 2;
+	if k>t[m] then exit(find(m+1,r,k))
+	else if k<t[m] then exit(find(l,m,k))
+	else exit(m);
+  end;
+
+  procedure count(k:longint);
+  var
+    q:longint;
+  begin
+    inc(tail);
+    q:=find(1,n,k);
+	os[tail]:=k;
+	if k-l>0 then op[tail]:=max(op[tail],abs(p[find(1,n,k-l)]-p[q]));
+	if (k-l>0)and(k mod l<>1) then op[tail]:=max(op[tail],abs(p[find(1,n,k-l-1)]-p[q]));
+	if (k>l)and(k mod l<>0) then op[tail]:=max(op[tail],abs(p[find(1,n,k-l+1)]-p[q]));
+	if k<=t[n]-l then op[tail]:=max(op[tail],abs(p[find(1,n,k+l)]-p[q]));
+	if (k<=t[n]-l)and(k mod l<>1) then op[tail]:=max(op[tail],abs(p[find(1,n,k+l-1)]-p[q]));
+	if (k<=t[n]-l)and(k mod l<>0) then op[tail]:=max(op[tail],abs(p[find(1,n,k+l+1)]-p[q]));
+	if k mod l<>1 then op[tail]:=max(op[tail],abs(p[find(1,n,k-1)]-p[q]));
+	if k mod l<>0 then op[tail]:=max(op[tail],abs(p[find(1,n,k+1)]-p[q]));
+  end;
+
+  procedure qsort();
+
+    procedure sort(l,r: longint);
+      var
+         i,j,x,y: longint;
+      begin
+         i:=l;
+         j:=r;
+         x:=os[(l+r) div 2];
+         repeat
+           while os[i]<x do
+            inc(i);
+           while x<os[j] do
+            dec(j);
+           if not(i>j) then
+             begin
+                y:=os[i];
+                os[i]:=os[j];
+                os[j]:=y;
+				y:=op[i];
+                op[i]:=op[j];
+                op[j]:=y;
+                inc(i);
+                j:=j-1;
+             end;
+         until i>j;
+         if l<j then
+           sort(l,j);
+         if i<r then
+           sort(i,r);
+      end;
+
+    begin
+       sort(1,tail);
+    end;
+
+begin
+  assign(input,'code.in');reset(input);
+  assign(output,'code.out');rewrite(output);
+  readln(l);
+  writeln(l);
+  while l<>0 do begin
+    n:=1;
+    fillchar(os,sizeof(os),0);
+    fillchar(op,sizeof(op),0);
+	readln(p[n],s);
+	t[0]:=0;
+	t[n]:=t[n-1]+s;
+	while (p[n]<>0) or (s<>0) do begin
+	  inc(n);
+	  readln(p[n],s);
+	  t[n]:=t[n-1]+s;
+	end;
+	dec(n);
+	tail:=0;
+	for i:=1 to n do begin
+	  k:=t[i-1]+1;
+      count(k);
+	  if k-l>0 then count(k-l);
+	  if (k-l-1>0) then count(k-l-1);
+      if k-l+1>0 then count(k-l+1);
+      if ((k-1) div l+1)*l+1<=t[n] then count(((k-1) div l+1)*l+1);
+	  if k+l<=t[n] then count(k+l);
+	  if k+l-1<=t[n] then count(k+l-1);
+      if k+l+1<=t[n] then count(k+l+1);
+	  if k-1>0 then count(k-1);
+	  if k+2<=t[n] then count(k+2);
+	end;
+	qsort;
+	p1:=1;
+	for i:=2 to tail do begin
+	  if os[i]=os[i-1] then continue;
+	  if op[i]=op[i-1] then continue;
+	  writeln(op[i-1],' ',os[i]-p1);
+	  p1:=os[i];
+	end;
+	writeln(op[tail],' ',t[n]-p1+1);
+        writeln(0,' ',0);
+    readln(l);
+	writeln(l);
+  end;
+  close(input);
+  close(output);
+end.

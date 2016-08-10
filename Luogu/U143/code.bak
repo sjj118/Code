@@ -1,0 +1,50 @@
+var
+  n,m,i,j,k,l,ans:longint;
+  a:array[1..300,1..300]of char;
+
+  function min(a,b:longint):longint;
+  begin
+    if a>b then min:=b else min:=a;
+  end;
+  
+  function max(a,b:longint):longint;
+  begin
+    if a>b then max:=a else max:=b;
+  end;
+
+  function ok(x1,y1,x2,y2:longint):boolean;
+  var
+    i1,j1,i2,j2:longint;
+  begin
+    i1:=x1;
+	i2:=x2;
+	j1:=y1;
+	j2:=y2;
+    ok:=false;
+    while a[i1,j1]=a[i2,j2] do begin
+	  if i1>i2 then exit(true);
+	  if j1=y2 then begin
+	    j1:=y1;
+		inc(i1);
+	  end else inc(j1);
+	  if j2=y1 then begin
+	    j2:=y2;
+		dec(i2);
+	  end else dec(j2);
+	end;
+  end;
+begin
+  readln(n,m);
+  for i:=1 to n do readln(a[i]);
+  k:=min(n,m);
+  ans:=-1;
+  writeln(ok(1,1,n,m));
+  for i:=1 to n-k+1 do begin
+    for j:=1 to m-k+1 do begin
+	  for l:=1 to min(n-i,m-j) do begin
+	    if(ok(i,j,i+l,j+l))then ans:=max(ans,l+1);
+	  end;
+	end;
+  end;
+  writeln(ans);
+end.

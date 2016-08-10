@@ -1,0 +1,37 @@
+var
+	s,sub:ansistring;
+	next:array[0..200000]of longint;
+	ans:array[0..200000]of longint;
+	i,j,n,m,k:longint;
+	
+	procedure get_next;
+	var
+		i,k:longint;
+	begin
+		k:=-1;
+		for i:=0 to m do begin
+			while (k>0)and(sub[i]<>sub[k]) do k:=next[k];
+			next[i]:=k;
+			inc(k);
+		end;
+	end;
+begin
+	readln(n,m,k);
+	readln(s);
+	readln(sub);
+	get_next;
+	i:=1;j:=0;ans:=0;
+	while i<=n do begin
+		if (j+1<=m)and(s[i+j]=sub[j+1]) then begin
+			inc(j);
+		end else begin
+			inc(ans[j]);
+			i:=i+j-next[j];
+			j:=0;
+		end;
+	end;
+	for i:=1 to k do begin
+		readln(j);
+		writeln(ans[j]);
+	end;
+end.

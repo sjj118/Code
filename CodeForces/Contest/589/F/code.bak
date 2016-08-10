@@ -1,0 +1,95 @@
+var
+	n,i,ans:longint;
+	a,b,tb,pos,home:array[1..100]of longint;
+	
+	procedure qsort;
+
+    procedure sort(l,r: longint);
+      var
+         i,j,x,y: longint;
+      begin
+         i:=l;
+         j:=r;
+         x:=a[(l+r) div 2];
+         repeat
+           while a[i]<x do
+            inc(i);
+           while x<a[j] do
+            dec(j);
+           if not(i>j) then
+             begin
+                y:=a[i];
+                a[i]:=a[j];
+                a[j]:=y;
+				y:=b[i];
+                b[i]:=b[j];
+                b[j]:=y;
+                inc(i);
+                j:=j-1;
+             end;
+         until i>j;
+         if l<j then
+           sort(l,j);
+         if i<r then
+           sort(i,r);
+      end;
+
+    begin
+       sort(1,n);
+    end;
+	
+	procedure qsort2;
+
+    procedure sort(l,r: longint);
+      var
+         i,j,x,y: longint;
+      begin
+         i:=l;
+         j:=r;
+         x:=tb[(l+r) div 2];
+         repeat
+           while tb[i]<x do
+            inc(i);
+           while x<tb[j] do
+            dec(j);
+           if not(i>j) then
+             begin
+                y:=tb[i];
+                tb[i]:=tb[j];
+                tb[j]:=y;
+				y:=pos[i];
+                pos[i]:=pos[j];
+                pos[j]:=y;
+                inc(i);
+                j:=j-1;
+             end;
+         until i>j;
+         if l<j then
+           sort(l,j);
+         if i<r then
+           sort(i,r);
+      end;
+
+    begin
+       sort(1,n);
+    end;
+	
+	function min(a,b:longint):longint;
+	begin
+		if a<b then exit(a) else exit(b);
+	end;
+begin
+	readln(n);
+	for i:=1 to n do readln(a[i],b[i]);
+	qsort;
+	ans:=b[1]-a[1];
+	for i:=1 to n do pos[i]:=i;
+	qsort2;
+	for i:=1 to n do home[pos[i]]:=i;
+	for i:=1 to n do begin
+		for j:=1 to n do if (b[pos[j]]>=a[i])and(a[pos[j]]>=a[i]) then begin
+			ans:=min(ans,(b[pos[j]]-a[i]) div (home[i]-j+1));
+		end;
+	end;
+	writeln(ans*n);
+end.

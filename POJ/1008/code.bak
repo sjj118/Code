@@ -1,0 +1,21 @@
+var
+  n,i,y,d,j,l:longint;
+  s,s2,m:string;
+begin
+  readln(n);
+  for i:=1 to n do begin
+    readln(s);
+	j:=1;
+	while s[j]<>'.' do inc(j);
+	s2:=copy(s,1,j-1);
+	val(s2,y);
+	j:=j+2;
+	l:=j;
+	while s[l]<>' ' do inc(l);
+	m:=copy(s,j,l-j);
+	l:=l+1;
+	s2:=copy(s,l,length(s)-l+1);
+	val(s2,d);
+	writeln(y,m,d);
+  end;
+end.

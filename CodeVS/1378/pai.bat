@@ -1,0 +1,1 @@
+comp test.pas code.pas /d /l

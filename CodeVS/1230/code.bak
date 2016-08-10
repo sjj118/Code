@@ -1,0 +1,14 @@
+var
+	n,m,k:longint;
+	b:array[1..100000]of boolean;
+begin
+	readln(n,m);
+	for i:=1 to n do begin
+		read(k);
+		b[k]:=true;
+	end;
+	for i:=1 to m do begin
+		readln(k);
+		if b[k] then writeln('YES') else writeln('NO');
+	end;
+end.
