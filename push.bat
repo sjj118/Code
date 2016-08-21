@@ -7,3 +7,4 @@ git commit -m "%1"
 git commit -m "%date:~0,-2%%time%"
 )
 git push
+pause
