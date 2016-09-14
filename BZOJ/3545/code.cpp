@@ -1,13 +1,15 @@
 #include<iostream>
 #include<cstdio>
 #include<algorithm>
-#define ls son[k][0]
-#define rs son[k][1]
+#define pii pair<int,int>
+#define mp make_pair
+#define fi first
+#define se second
 #define rg register
 #define rep(i,x,y) for(rg int i=(x);i<=(y);++i)
 #define per(i,x,y) for(rg int i=(x);i>=(y);--i)
 using namespace std;
-const int maxn=1e5+10,maxq=5e5+10;
+const int maxn=1e5+10,maxq=5e5+10,inf=1e9;
 inline bool vaild(char c){return c>='0'&&c<='9';}
 inline char gc(){char c=getchar();while(!vaild(c))c=getchar();return c;}
 inline int read(){int tmp=0;char c=gc();while(vaild(c))tmp=tmp*10+c-'0',c=getchar();return tmp;}
@@ -18,57 +20,49 @@ inline void write(int x){
 	while(l)putchar(a[l--]+'0');puts("");
 }
 int n,m,q;
-struct SplayTree{
-	int son[maxn][2],size[maxn],val[maxn],pa[maxn];
-	inline int ws(int k){return son[pa[k]][1]==k;}
-	inline void set(int a,int b,int c){pa[a]=b;son[b][c]=a;}
-	inline void update(int k){size[k]=size[ls]+size[rs]+1;}
-	inline void rot(int k){
-		int f=pa[k],gf=pa[f],w=ws(k);
-		set(k,gf,ws(f));set(son[k][!w],f,w);set(f,k,!w);
-		update(f);
+struct Treap{
+	int tot,pa[maxn],ls[maxn],rs[maxn],rnd[maxn],size[maxn],key[maxn];
+	void clear(){rep(i,1,n)pa[i]=i;}
+	int getroot(int k){return pa[k]==k?k:pa[k]=getroot(pa[k]);}
+	int newnode(int x){int k=++tot;rnd[k]=rand();key[k]=x;size[k]=1;return k;}
+	void update(int k){size[k]=size[ls[k]]+size[rs[k]]+1;}
+	int merge(int a,int b){
+		if(!a||!b)return a+b;
+		if(rnd[a]<rnd[b])return rs[a]=merge(rs[a],b),update(a),a;
+		else return ls[b]=merge(a,ls[b]),update(b),b;
 	}
-	inline void splay(int k,int f=0){
-		while(pa[k]!=f){
-			if(pa[pa[k]]!=f&&ws(k)==ws(pa[k]))rot(pa[k]);rot(k);
-		}
-		update(k);
-	}
-	int insert(int p,int k){
-		son[pa[p]][ws(p)]=0;pa[p]=0;
-		while(k){
-			int t=val[k]>val[p]?0:1;
-			if(son[k][t])k=son[k][t];
-			else{set(p,k,t);break;}
-		}
-		splay(p);
-		return p;
-	}
-	void search(int k,int&p){
-		if(ls)search(ls,p);
-		if(rs)search(rs,p);
-		p=insert(k,p);
-//		int t1=ls,t2=rs;
-//		p=insert(k,p);
-//		if(t1)search(t1,p);
-//		if(t2)search(t2,p);
-	}
-	void merge(int a,int b){
-		splay(a);splay(b);
-		if(a==b)return;
-		if(pa[a])return;
-		if(size[b]>size[a])swap(a,b);
-		search(b,a);
+	void split(int k,int p,int&l,int&r){
+		if(p==0)l=0,r=k;
+		else if(size[ls[k]]==p)l=ls[k],ls[k]=0,update(k),r=k;
+		else if(size[ls[k]]>p)split(ls[k],p,l,ls[k]),update(k),r=k;
+		else split(rs[k],p-size[ls[k]]-1,rs[k],r),update(k),l=k;
 	}
 	int pth(int k,int p){
-		splay(k);
-		if(size[k]<p)return -1;
-		p=size[k]-p+1;
-		while(1){
-			if(size[ls]>=p)k=ls;
-			else if(size[ls]+1==p){return val[k];}
-			else p-=size[ls]+1,k=rs;
-		}
+		if(size[k]<p||p<=0)return -1;
+		if(size[ls[k]]>=p)return pth(ls[k],p);
+		if(size[ls[k]]+1==p)return key[k];
+		return pth(rs[k],p-size[ls[k]]-1);
+	}
+	int rank(int k,int x){
+		if(!k)return 1;
+		if(key[k]<x)return rank(rs[k],x)+size[ls[k]]+1;
+		return rank(ls[k],x);
+	}
+	void insert(int k,int p){
+		int l,r;split(k,rank(k,key[p])-1,l,r);
+		int root=merge(l,p);root=merge(root,r);
+		pa[p]=pa[k]=pa[root]=root;
+	}
+	void search(int k,int p){
+		if(k==0)return;
+		search(ls[k],p);search(rs[k],p);
+		ls[k]=rs[k]=0;size[k]=1;insert(getroot(p),k);
+	}
+	void unio(int a,int b){
+		a=getroot(a);b=getroot(b);
+		if(a==b)return;
+		if(size[a]>size[b])swap(a,b);
+		search(a,b);
 	}
 }T;
 struct Edge{
@@ -80,21 +74,21 @@ struct Query{
 }qu[maxq];
 bool operator<(Query a,Query b){return a.x<b.x;}
 int ans[maxq];
-#include<ctime>
 int main(){
 	freopen("code.in","r",stdin);freopen("code.out","w",stdout);
 	scanf("%d%d%d",&n,&m,&q);
-	rep(i,1,n)T.val[i]=read();
+	T.clear();
+	rep(i,1,n)T.newnode(read());
 	rep(i,1,m)e[i].a=read(),e[i].b=read(),e[i].c=read();
 	rep(i,1,q)qu[i].v=read(),qu[i].x=read(),qu[i].k=read(),qu[i].pos=i;
 	sort(qu+1,qu+1+q);sort(e+1,e+1+m);
-	cerr<<clock()<<endl;
 	for(int i=1,j=1;i<=q;++i){
-		while(j<=m&&e[j].c<=qu[i].x)T.merge(e[j].a,e[j].b),++j;
-		qu[i].ans=T.pth(qu[i].v,qu[i].k);
+		while(j<=m&&e[j].c<=qu[i].x){
+			T.unio(e[j].a,e[j].b);++j;
+		}
+		qu[i].ans=T.pth(T.getroot(qu[i].v),T.size[T.getroot(qu[i].v)]+1-qu[i].k);
 	}
 	rep(i,1,q)ans[qu[i].pos]=qu[i].ans;
 	rep(i,1,q)write(ans[i]);
-	cerr<<clock()<<endl;
 	return 0;
 }
