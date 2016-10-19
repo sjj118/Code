@@ -1,0 +1,3 @@
+make
+code
+%0
