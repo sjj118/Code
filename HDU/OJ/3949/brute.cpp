@@ -1,42 +1,70 @@
 #include<iostream>
+#include<cstring>
 #include<cstdio>
 #include<algorithm>
-#define rg register
-#define rep(i,x,y) for(rg int i=(x);i<=(y);++i)
-#define per(i,x,y) for(rg int i=(x);i>=(y);--i)
+#include<cmath>
+#define ll long long
+#define inf 1000000000 
 using namespace std;
 namespace brute{
-	
-typedef long long LL;
-const int N=1e4+10,P=1e7;
-int n,q,tot;
-LL a[N],b[P];
-void dfs(int k,LL d,bool f){
-	if(k==n+1){
-		if(f)b[++tot]=d;
-		return;
-	}
-	dfs(k+1,d,f);dfs(k+1,d^a[k],1);
+
+inline ll read()
+{
+	ll x=0;char ch=getchar();
+	while(ch<'0'||ch>'9')ch=getchar();
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x;
 }
-int main(){
-	int T;scanf("%d",&T);
-	rep(cas,1,T){
+bool zero;
+int T,n,m,tot;
+ll bin[65],a[10005];
+void gauss()
+{
+	tot=zero=0;
+	for(ll i=bin[60];i;i>>=1)
+	{
+		int j=tot+1;
+		while(!(i&a[j])&&j<=n)j++;
+		if(j==n+1)continue;
+		tot++;
+		swap(a[tot],a[j]);
+		for(int k=1;k<=n;k++)
+			if(k!=tot&&(a[k]&i))
+				a[k]^=a[tot];
+	}
+	if(tot!=n)zero=1;
+}
+ll query(ll x)
+{
+	ll ans=0;
+	x-=zero;
+	if(!x)return 0;
+	if(x>=bin[tot])return -1;
+	for(int i=1;i<=tot;i++)
+		if(x&bin[tot-i])ans^=a[i];
+	return ans;
+}
+int main()
+{
+	bin[0]=1;for(int i=1;i<=60;i++)bin[i]=bin[i-1]<<1;
+	T=read();
+	for(int cas=1;cas<=T;cas++)
+	{
+		memset(a,0,sizeof(a));
 		printf("Case #%d:\n",cas);
-		scanf("%d",&n);
-		rep(i,1,n)scanf("%lld",&a[i]);tot=0;
-		dfs(1,0,0);
-		sort(b+1,b+1+tot);
-		b[n=0]=-1;
-		rep(i,1,tot)if(b[i]!=b[n])b[++n]=b[i];
-		scanf("%d",&q);
-		rep(i,1,q){
-			LL k;scanf("%lld",&k);
-			if(k>n)puts("-1");else printf("%lld\n",b[k]);
+		n=read();
+		for(int i=1;i<=n;i++)
+			a[i]=read();
+		gauss();
+		m=read();
+		while(m--)
+		{
+			int x=read();
+			printf("%lld\n",query(x));
 		}
 	}
 	return 0;
 }
-
 }
 int main(){
 	freopen("code.in","r",stdin);freopen("brute.out","w",stdout);

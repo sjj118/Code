@@ -14,7 +14,7 @@ inline LL min(LL a,LL b){return a<b?a:b;}
 inline LL max(LL a,LL b){return a>b?a:b;}
 void gauss(){
 	int k=0;
-	per(i,62,0){
+	per(i,63,0){
 		rep(j,k+1,n)if((a[j]>>i)&1){
 			swap(a[++k],a[j]);
 			wei[k]=i;
@@ -27,12 +27,12 @@ void gauss(){
 }
 void get(int w,LL k,LL&d){
 	if(w>n)return;
-	if((1<<(n-w))>=k){
+	if((1ll<<(n-w))>=k){
 		d=min(d,d^a[w]);
 		get(w+1,k,d);
 	}else{
 		d=max(d,d^a[w]);
-		get(w+1,k-(1<<(n-w)),d);
+		get(w+1,k-(1ll<<(n-w)),d);
 	}
 }
 int main(){
@@ -46,7 +46,7 @@ int main(){
 		rep(i,1,q){
 			LL k;scanf("%lld",&k);
 			if(!flag)++k;
-			if(k>(1<<n))puts("-1");
+			if(k>(1ll<<n))puts("-1");
 			else{
 				LL ans=0;get(1,k,ans);
 				printf("%lld\n",ans);
