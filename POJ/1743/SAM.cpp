@@ -58,6 +58,7 @@ struct SAM{
 }sam;
 
 int main(){
+	freopen("code.in","r",stdin);freopen("SAM.out","w",stdout);
 	while(scanf("%d",&n)>0&&n){
 		for(int i=1;i<=n;++i)scanf("%d",&a[i]);
 		for(int i=n;i>=2;--i)a[i]=a[i]-a[i-1]+100;
