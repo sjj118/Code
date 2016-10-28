@@ -1,5 +1,4 @@
 git add -A
 git status
-DATE=$(date "+%Y/%m/%d %T")
-git commit -m $DATE
+git commit -m "$date"
 git push
