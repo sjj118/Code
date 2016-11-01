@@ -1,0 +1,15 @@
+"yzx"
+"xyz"
+5
+"abc"
+"abc"
+1
+"cba"
+"abc"
+8
+"ooredcpt"
+"topcoder"
+58
+"aaaacdeehhhijklmmqqrsttvvvvwyyvuusrrrooooljjihhgeb"
+"aaaabcdeeeghhhhhiijjjkllmmooooqqrrrrssttuuvvvvvwyy"
+38517901796974
