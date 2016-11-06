@@ -33,7 +33,7 @@ int main(){
 	fclose(stdin);fclose(stdout);
 	freopen("code.in","w",stdout);
 //	int n=rand()%200000+1;
-	int n=200000;
+	int n=200;
 	printf("%d\n",n);
 	rep(i,1,n)a[i]=i;
 	random_shuffle(a+1,a+1+n);

@@ -1,4 +1,3 @@
-#include<ctime>
 #include<iostream>
 #include<cstdio>
 #include<cmath>
@@ -44,11 +43,10 @@ int main(){
 	rep(i,1,n>>1)swap(a[i],a[n-i+1]);
 	calc(fb);
 	rep(i,1,n)printf("%d\n",int(ceil(max(fa[i],fb[n-i+1]))));
-	cerr<<clock()<<endl;
 	return 0;
 }
 }
 int main(){
-	freopen("code.in","r",stdin);freopen("code.out","w",stdout);
+//	freopen("code.in","r",stdin);freopen("code.out","w",stdout);
 	return sjj118::main();
 }

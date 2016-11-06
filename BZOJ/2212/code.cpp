@@ -9,17 +9,19 @@ using namespace std;
 namespace sjj118{
 
 typedef long long LL;
-const int N=4e5+10,P=1e7;
+const int N=4e5+10,P=4e6;
 int n;
 struct SGT{
 	int tot,son[P][2],val[P];
 	void update(int k){val[k]=val[ls]+val[rs];}
-	void merge(int&k,int p){
-		if(p==0)return;
-		if(k==0){k=p;return;}
-		val[k]+=val[p];
-		merge(ls,son[p][0]);
-		merge(rs,son[p][1]);
+	int merge(int a,int b,LL&x1,LL&x2){
+		if(!a||!b)return a+b;
+		x1+=(LL)val[son[a][0]]*val[son[b][1]];
+		x2+=(LL)val[son[a][1]]*val[son[b][0]];
+		val[a]+=val[b];
+		son[a][0]=merge(son[a][0],son[b][0],x1,x2);
+		son[a][1]=merge(son[a][1],son[b][1],x1,x2);
+		return a;
 	}
 	int query(int ll,int rr,int k,int l,int r){
 		if(ll<=l&&r<=rr)return val[k];
@@ -38,24 +40,18 @@ struct SGT{
 	}
 }T;
 struct Tree{
-	int root[N],tot,son[N][2],val[N],size[N];
+	int root[N],tot,son[N][2],val[N];
 	void input(int&k){
 		if(!k)k=++tot;
 		scanf("%d",&val[k]);
 		if(!val[k])input(ls),input(rs);
 	}
-	LL foreach(int k,int rt){
-		if(val[k])return T.query(1,val[k],rt,1,n);
-		return foreach(ls,rt)+foreach(rs,rt);
-	}
 	LL dfs(int k){
-		if(val[k]){size[k]=1;return 0;}
+		if(val[k])return 0;
 		LL ret=dfs(ls)+dfs(rs);
-		size[k]=size[ls]+size[rs];
-		if(size[ls]<size[rs])swap(ls,rs);
-		LL t=foreach(rs,root[ls]);
-		ret+=min(t,1ll*size[ls]*size[rs]-t);
-		root[k]=root[ls];T.merge(root[k],root[rs]);
+		LL cnt1=0,cnt2=0;
+		root[k]=T.merge(root[ls],root[rs],cnt1,cnt2);
+		ret+=min(cnt1,cnt2);
 		return ret;
 	}
 	void init(int k){
@@ -73,6 +69,6 @@ int main(){
 }
 }
 int main(){
-	freopen("code.in","r",stdin);freopen("code.out","w",stdout);
+//	freopen("code.in","r",stdin);freopen("code.out","w",stdout);
 	return sjj118::main();
 }

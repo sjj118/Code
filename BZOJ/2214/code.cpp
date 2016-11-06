@@ -77,6 +77,6 @@ int main(){
 }
 }
 int main(){
-	freopen("shift.in","r",stdin);freopen("shift.out","w",stdout);
+//	freopen("shift.in","r",stdin);freopen("shift.out","w",stdout);
 	return sjj118::main();
 }
