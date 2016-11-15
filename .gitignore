@@ -1,8 +1,7 @@
 *.*
--*.cpp
--*.pas
--*.bat
--*.sh
+!*.cpp
+!*.bat
+!*.sh
 # Compiled Object files
 *.slo
 *.lo
