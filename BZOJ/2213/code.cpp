@@ -37,6 +37,6 @@ int main(){
 }
 }
 int main(){
-	freopen("code.in","r",stdin);freopen("code.out","w",stdout);
+	//freopen("code.in","r",stdin);freopen("code.out","w",stdout);
 	return sjj118::main();
 }
