@@ -11,7 +11,7 @@
 #define per(i,x,y) for(rg int i=(x);i>=(y);--i)
 using namespace std;
 typedef pair<int,int> pii;
-const int N=3e5+10,inf=1e9;
+const int N=3e6+10,inf=1e9;
 inline void up(int&x,int y){if(y>x)x=y;}
 inline void dn(int&x,int y){if(y<x)x=y;}
 int n,m,d[N];
@@ -25,15 +25,16 @@ struct Graph{
 	}
 	pii dfs(int k,int pre){
 		pii ret=mp(0,0);int maxd=0;
-		if(d[k]==0)ret.se=-1;
+		if(d[k]==0)ret.se=-inf;
 		for(int p=head[k];p;p=next[p])if(to[p]!=pre){
 			pii tmp=dfs(to[p],k);
 			ret.fi+=tmp.fi;
+			if(tmp.se==-inf)continue;
 			++tmp.se;
-			if(tmp.se>0)up(ret.se,tmp.se);
+			if(tmp.se>=0)up(ret.se,tmp.se);
 			else up(maxd,-tmp.se);
 		}
-		if(maxd>0&&maxd-1>=ret.se)ret.se=-maxd;
+		if(maxd-1>=ret.se)ret.se=-maxd;
 		if(ret.se==l)++ret.fi,ret.se=-l-1;
 		return ret;
 	}
