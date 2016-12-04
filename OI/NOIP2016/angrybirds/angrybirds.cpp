@@ -10,7 +10,7 @@ using namespace std;
 namespace sjj118{
 	
 const int N=18+2,V=(1<<18)+10;
-const double eps=1e-5;
+const double eps=1e-10;
 inline void dn(int&x,int y){if(y<x)x=y;}
 inline int lowbit(int x){return x&(-x);}
 int n,m,v,f[V],co[V],g[N*N],tot;
@@ -28,11 +28,11 @@ int main(){
 			rep(k,1,tot)if(((g[k]>>(i-1))&1)&&((g[k]>>(j-1))&1))flag=1;
 			if(flag)continue;
 			if(dblcmp(x[i]-x[j])==0)continue;
-			double a=1.0*(x[j]*y[i]-x[i]*y[j])/(x[i]*x[j]*(x[i]-x[j]));
-			double b=1.0*(y[i]-a*x[i]*x[i])/x[i];
-			if(dblcmp(a)>=0)continue;
+			double a=(x[j]*y[i]-x[i]*y[j]);
+			double b=(y[i]-a*x[i]*x[i]);
+			if(dblcmp(a/(x[i]*x[j]*(x[i]-x[j])))>=0)continue;
 			int tmp=0;
-			rep(k,1,n)if(dblcmp(a*x[k]*x[k]+b*x[k]-y[k])==0)tmp|=1<<(k-1);
+			rep(k,1,n)if(dblcmp((x[j]*y[i]-x[i]*y[j])*x[k]*x[k]+(y[i]-a*x[i]*x[i])*x[j]*(x[i]-x[j])*x[k]-y[k]*(x[i]*x[j]*(x[i]-x[j])))==0)tmp|=1<<(k-1);
 			g[++tot]=tmp;
 		}
 		rep(i,1,v-1){
