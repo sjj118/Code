@@ -8,7 +8,7 @@
 using namespace std;
 namespace sjj118{
 	
-const int N=1e5+10,M=2e5+10,P=4*N,V=M*20,MEM=4*N;
+const int N=1e6+10,M=2e6+10,P=1e7,V=2e7,MEM=1e7;
 inline bool vaild(char c){return c>='0'&&c<='9';}
 inline char gc(){char c=getchar();while(!vaild(c))c=getchar();return c;}
 inline int read(){int ret=0;char c=gc();while(vaild(c))ret=ret*10+c-'0',c=getchar();return ret;}
@@ -71,6 +71,6 @@ int main(){
 }
 }
 int main(){
-	freopen("code.in","r",stdin);freopen("code.out","w",stdout);
+	freopen("code.in","r",stdin);freopen("big.out","w",stdout);
 	return sjj118::main();
 }
