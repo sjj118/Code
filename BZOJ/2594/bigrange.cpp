@@ -1,13 +1,11 @@
 #include<iostream>
 #include<cstdio>
 #include<map>
-#include<ctime>
-#include<algorithm>
 #define rg register
 #define rep(i,x,y) for(rg int i=(x);i<=(y);++i)
 #define per(i,x,y) for(rg int i=(x);i>=(y);--i)
 using namespace std;
-const int N=1e5+10,M=1e6+10;
+const int N=1e6+10,M=1e7+10;
 inline bool vaild(char c){return c>='0'&&c<='9';}
 inline char gc(){char c=getchar();while(!vaild(c))c=getchar();return c;}
 inline int read(){int ret=0;char c=gc();while(vaild(c))ret=ret*10+c-'0',c=getchar();return ret;}
@@ -15,7 +13,7 @@ int n,m,q;
 struct Edge{
 	int u,v,t,bad,id;
 }e[M];
-const int P=N<<1;
+const int P=N<<4;
 #define ls son[k][0]
 #define rs son[k][1]
 struct LCT{
@@ -108,34 +106,14 @@ struct Query{
 	int k,x,y,ans;
 }o[N];
 map<int,int> eid[N];
-struct UFS{
-	int pa[N],rank[N];
-	void clear(){rep(i,1,n)pa[i]=i,rank[i]=0;}
-	int find(int k){return pa[k]==k?k:pa[k]=find(pa[k]);}
-	bool unio(int a,int b){
-		a=find(a);b=find(b);
-		if(a==b)return 0;
-		if(rank[a]>rank[b])swap(a,b);
-		pa[a]=b;
-		if(rank[a]==rank[b])++rank[b];
-		return 1;
-	}
-}S;
-void MST(){
-	S.clear();
-	rep(i,1,m)if(!e[i].bad){
-		if(S.unio(e[i].u,e[i].v))addedge(e[i]);
-	}
-}
-bool operator<(const Edge&a,const Edge&b){return a.t<b.t;}
 int main(){
 	n=read();m=read();q=read();
 	rep(i,1,m){
+		e[i].id=i;
 		scanf("%d%d%d",&e[i].u,&e[i].v,&e[i].t);
 		if(e[i].u>e[i].v)swap(e[i].u,e[i].v);
+		eid[e[i].u][e[i].v]=i;
 	}
-	sort(e+1,e+1+m);
-	rep(i,1,m)eid[e[i].u][e[i].v]=i,e[i].id=i;
 	rep(i,1,q){
 		scanf("%d%d%d",&o[i].k,&o[i].x,&o[i].y);
 		if(o[i].k==2){
@@ -144,7 +122,9 @@ int main(){
 		}
 	}
 	T.tot=n;
-	MST();
+	rep(i,1,m)if(!e[i].bad){
+		addedge(e[i]);
+	}
 	per(i,q,1){
 		if(o[i].k==1){
 			if(T.isLink(o[i].x,o[i].y))o[i].ans=e[id[T.getmaxEdge(o[i].x,o[i].y)]].t;
