@@ -1,133 +1,116 @@
 #include<iostream>
 #include<cstdio>
-#include<cstring>
 #include<queue>
-#define maxn 100009
-#define inf 1e9
-#define lson son[k][0]
-#define rson son[k][1]
-#define ws(k) (son[pa[k]][1]==k)
-
+#define rg register
+#define rep(i,x,y) for(rg int i=(x);i<=(y);++i)
+#define per(i,x,y) for(rg int i=(x);i>=(y);--i)
 using namespace std;
-
-int n,m,light[maxn],height[maxn][30],clo;
-struct heap{
-	priority_queue<int> A,B;
-	int size(){
-		return A.size()-B.size();
+const int N=1e5+10,NLOGN=2e6;
+inline void up(int&x,int y){if(y>x)x=y;}
+inline bool vaild(char c){return c>='0'&&c<='9';}
+inline char gc(){char c=getchar();while(!vaild(c))c=getchar();return c;}
+inline int read(){int ret=0;char c=gc();while(vaild(c))ret=ret*10+c-'0',c=getchar();return ret;}
+int n,q,on[N];
+struct Heap{
+	priority_queue<int>A,B;
+	int size(){return A.size()-B.size();}
+	void update(){while(B.size()&&A.top()==B.top())A.pop(),B.pop();}
+	void push(int x){A.push(x);}
+	void del(int x){B.push(x);}
+	void pop(){update();A.pop();}
+	int top(){if(size()==0)return -1;update();return A.top();}
+	int top2(){
+		if(size()==0)return -1;
+		if(size()==1)return min(0,top());
+		int x=top();pop();
+		int y=top();push(x);
+		if(y<0)return min(0,x);
+		return x+y;
 	}
-	int top(){
-		while(B.size()&&A.top()==B.top()) A.pop(),B.pop();
-		if(!A.size())return -inf;
-		return A.top();
-	}
-	void pop(){
-		while(B.size()&&A.top()==B.top()) A.pop(),B.pop();
-		A.pop();
-	}
-	int sectop(){
-		int x=top();
-		int ans=top();
-		A.push(x);
-		return ans;
-	}
-	void add(int x){
-		A.push(x);
-	}
-	void del(int x){
-		B.push(x);
-	}
-} A,B[maxn],C[maxn];
-struct Tree{
-	int tot,head[maxn],next[maxn<<1],son[maxn<<1],pa[maxn],dep[maxn];
-	void addson(int a,int b){
-		son[++tot]=b;
-		next[tot]=head[a];
-		head[a]=tot;
-		pa[b]=a;
-		dep[b]=dep[a]+1;
-	}
-	Tree(){
-		dep[1]=1;
-	}
-} T;
-struct graph{
-	int tot,head[maxn],next[maxn<<1],to[maxn<<1],size[maxn],mark[maxn];
-	void addedge(int a,int b){
-		to[++tot]=b;
-		next[tot]=head[a];
-		head[a]=tot;
-	}
-	int findSize(int k,int pre){
+}A,B[N],C[N];
+struct LinkMap{
+	int tot,head[N],to[NLOGN],next[NLOGN],len[NLOGN];
+	void ins(int a,int b,int c){to[++tot]=b;next[tot]=head[a];head[a]=tot;len[tot]=c;}
+}lp;
+struct Graph{
+	int tot,head[N],to[N<<1],next[N<<1],mark[N],size[N],weight[N];
+	void ins(int a,int b){to[++tot]=b;next[tot]=head[a];head[a]=tot;}
+	void addedge(int a,int b){ins(a,b);ins(b,a);}
+	int getsize(int k,int pre,int rt,int l){
 		size[k]=1;
-		for(int p=head[k];p;p=next[p])if(to[p]!=pre&&!mark[to[p]])size[k]+=findSize(to[p],k);
+		if(pre)lp.ins(k,rt,l);
+		for(int p=head[k];p;p=next[p])if(to[p]!=pre&&!mark[to[p]])size[k]+=getsize(to[p],k,rt,l+1);
 		return size[k];
 	}
-	int gg,minmax;
-	void findG(int k,int s,int pre){
-		int temp=s-size[k];
-		for(int p=head[k];p;p=next[p])if(to[p]!=pre&&!mark[to[p]])temp=max(temp,size[to[p]]),findG(to[p],s,k);
-		if(temp<minmax){
-			minmax=temp;
-			gg=k;
+	int getcore(int k,int pre,int s){
+		int ret=k;
+		weight[k]=s-size[k];
+		for(int p=head[k];p;p=next[p])if(to[p]!=pre&&!mark[to[p]])up(weight[k],size[to[p]]);
+		for(int p=head[k];p;p=next[p])if(to[p]!=pre&&!mark[to[p]]){
+			int t=getcore(to[p],k,s);
+			if(weight[t]<weight[ret])ret=t;
 		}
+		return ret;
 	}
-	int findG(int k,int s){
-		gg=0;minmax=inf;
-		findG(k,s,0);
-		return gg;
+	void getC(int k,int pre,int rt,int l){
+		C[rt].push(l);
+		for(int p=head[k];p;p=next[p])if(to[p]!=pre&&!mark[to[p]])getC(to[p],k,rt,l+1);
 	}
-	void dfs(int k,int rt,int dep,int pre){
-		C[rt].add(dep);height[k][T.dep[rt]]=dep;
-		for(int p=head[k];p;p=next[p])if(to[p]!=pre&&!mark[to[p]])dfs(to[p],rt,dep+1,k);
-	}
-	void build(int k){
+	void divide(int k){
 		mark[k]=1;
-		dfs(k,k,0,k);
-		findSize(k,k);
+		getsize(k,0,k,0);
+		B[k].push(0);
 		for(int p=head[k];p;p=next[p])if(!mark[to[p]]){
-			int gr=findG(to[p],size[to[p]]);
-			T.addson(k,gr);
-			build(gr);
+			int g=getcore(to[p],k,size[to[p]]);
+			getC(to[p],k,g,1);
+			int t=C[g].top();
+			B[k].push(t);
+			divide(g);
 		}
+		A.push(B[k].top2());
+		mark[k]=0;
 	}
-} G;
-int query(){
-	if(clo<=1)return clo-1;
-	else return A.top();
+}G;
+void ins(int x){
+	A.del(B[x].top2());
+	B[x].push(0);
+	A.push(B[x].top2());
+	for(int g=x,k,p=lp.head[x];p;g=k,p=lp.next[p]){
+		k=lp.to[p];
+		A.del(B[k].top2());
+		B[k].del(C[g].top());
+		C[g].push(lp.len[p]);
+		B[k].push(C[g].top());
+		A.push(B[k].top2());
+	}
 }
-void turnon(int k){
-	--clo;
-	light[k]=1;
-	
+void del(int x){
+	A.del(B[x].top2());
+	B[x].del(0);
+	A.push(B[x].top2());
+	for(int g=x,k,p=lp.head[x];p;g=k,p=lp.next[p]){
+		k=lp.to[p];
+		A.del(B[k].top2());
+		B[k].del(C[g].top());
+		C[g].del(lp.len[p]);
+		B[k].push(C[g].top());
+		A.push(B[k].top2());
+	}
 }
-void turnoff(int k){
-	++clo;
-	light[k]=0;
-	
-}
-
 int main(){
 	scanf("%d",&n);
-	clo=n;
-	for(int i=1;i<n;++i){
-		int a,b;
-		scanf("%d%d",&a,&b);
-		G.addedge(a,b);
-		G.addedge(b,a);
-	}
-	G.build(1);
-	for(int i=1;i<=n;++i) A.add(B[i].top()+B[i].sectop());
-	scanf("%d",&m);
-	for(int i=0;i<m;++i){
-		char op;
-		scanf("\n%c",&op);
-		if(op=='G'){
-			printf("%d\n",query());
+	rep(i,1,n-1)G.addedge(read(),read());
+	G.divide(1);
+	scanf("%d",&q);
+	while(q--){
+		char op;scanf("\n%c",&op);
+		if(op=='C'){
+			int x;scanf("%d",&x);
+			if(on[x])ins(x);
+			else del(x);
+			on[x]^=1;
 		}else{
-			int x;
-			scanf("%d",&x);
-			if(light[x])turnoff(x);else turnon(x);
+			printf("%d\n",A.top());
 		}
 	}
 	return 0;
