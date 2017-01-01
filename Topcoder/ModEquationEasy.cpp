@@ -32,3 +32,8 @@ public:
 		return f.val[v][0];
 	}
 };
+
+
+// Powered by FileEdit
+// Powered by TZTester 1.01 [25-Feb-2003]
+// Powered by CodeProcessor

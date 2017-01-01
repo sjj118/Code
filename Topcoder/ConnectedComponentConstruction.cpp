@@ -12,7 +12,7 @@ public:
 		n=_s.size();
 		rep(i,1,n)s[i]=_s[i-1];
 		rep(i,1,n)a[i]=i;
-		sort(a,a+n,cmp);
+		sort(a+1,a+1+n,cmp);
 		vector<string> ans;
 		vector<string> noans;
 		rep(i,1,n)t[i]=1;
