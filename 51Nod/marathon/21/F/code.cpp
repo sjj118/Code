@@ -24,18 +24,18 @@ struct World{
 	LinkMap fson;
 	World(){tot=1;}
 	int ins(int c,int lst){
-		if(son[lst][c]){
-			int q=son[lst][c];
-			if(step[q]==step[lst]+1)return son[lst][c];
-			else{
-				int nq=++tot;step[nq]=step[lst]+1;
-				memcpy(son[nq],son[q],sizeof(son[q]));
-				pr[nq]=pr[q];
-				pr[q]=nq;
-				while(lst&&son[lst][c]==q)son[lst][c]=nq,lst=pr[lst];
-				return nq;
-			}
-		}
+		//if(son[lst][c]){
+		//	int q=son[lst][c];
+		//	if(step[q]==step[lst]+1)return son[lst][c];
+		//	else{
+		//		int nq=++tot;step[nq]=step[lst]+1;
+		//		memcpy(son[nq],son[q],sizeof(son[q]));
+		//		pr[nq]=pr[q];
+		//		pr[q]=nq;
+		//		while(lst&&son[lst][c]==q)son[lst][c]=nq,lst=pr[lst];
+		//		return nq;
+		//	}
+		//}
 		int k=++tot;step[k]=step[lst]+1;
 		while(lst&&son[lst][c]==0)son[lst][c]=k,lst=pr[lst];
 		if(lst){
@@ -91,8 +91,8 @@ struct World{
 		cls(deg);
 		ql=qr=0;
 		rep(i,1,tot)rep(j,0,alp-1)if(son[i][j])++deg[son[i][j]];
-		rep(i,1,tot)if(deg[i]==0)q[qr++]=i,pathcount[i]=1;
-		assert(qr==1);
+		rep(i,1,tot)if(deg[i]==0)q[qr++]=i;
+		pathcount[1]=1;
 		while(ql!=qr){
 			int k=q[ql++];
 			rep(i,0,alp-1)if(son[k][i]){
