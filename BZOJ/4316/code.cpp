@@ -5,6 +5,16 @@
 #define per(i,x,y) for(rg int i=(x);i>=(y);--i)
 using namespace std;
 const int maxn=1e5+10,maxm=12e4+10;
+inline bool vaild(char c){return c>='0'&&c<='9';}
+inline char gc(){char c=getchar();while(!vaild(c))c=getchar();return c;}
+inline int read(){int ret=0;char c=gc();while(vaild(c))ret=ret*10+c-'0',c=getchar();return ret;}
+inline void write(int x){
+	int a[10],l=0;
+	while(x)a[++l]=x%10,x/=10;
+	if(l==0)putchar('0');
+	per(i,l,1)putchar(a[i]+'0');
+	puts("");
+}
 inline void dn(int&x,int y){if(y<x)x=y;}
 inline void up(int&x,int y){if(y>x)x=y;}
 int n,m,ps,f[maxn][2],g[maxn][2],a[maxn];
@@ -53,10 +63,10 @@ struct Cactus{
 	}
 }G;
 int main(){
-	scanf("%d%d",&n,&m);ps=n;
-	rep(i,1,m){int u,v;scanf("%d%d",&u,&v);G.addedge(u,v);}
+	n=read();m=read();ps=n;
+	rep(i,1,m)G.addedge(read(),read());
 	G.dfs(1,0);
 	T.dfs(1);
-	printf("%d\n",max(f[1][0],f[1][1]));
+	write(max(f[1][0],f[1][1]));
 	return 0;
 }
