@@ -3,10 +3,10 @@
 #define rep(i,x,y) for(int i=(x);i<=(y);++i)
 #define per(i,x,y) for(int i=(x);i>=(y);--i)
 using std::swap;
+const int N=500+10,M=N*N;
 inline bool vaild(char c){return c>='0'&&c<='9';}
 inline char gc(){char c=getchar();while(!vaild(c))c=getchar();return c;}
 inline int read(){int ret=0;char c=gc();while(vaild(c))ret=ret*10+c-'0',c=getchar();return ret;}
-const int N=500+10,M=N*N;
 int n,m;
 struct Graph{
 	int tot,head[N],to[M],next[M];
@@ -26,7 +26,8 @@ struct Graph{
 			pa[a]=pa[b]=f;a=nxt[b];
 		}
 	}
-	int mat[N],q[N],vis[N],ql,qr,nxt[N];
+	int mat[N],nxt[N],vis[N];
+	int q[N],ql,qr;
 	bool match(int s){
 		rep(i,1,n)vis[i]=0,pa[i]=i;
 		ql=qr=0;q[qr++]=s;vis[s]=1;
@@ -40,7 +41,7 @@ struct Graph{
 						return 1;
 					}
 				}else if(vis[g]==1){
-					int f=lca(find(k),find(g));
+					int f=lca(k,g);
 					blossom(k,g,f);blossom(g,k,f);
 				}
 			}

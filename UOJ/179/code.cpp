@@ -1,55 +1,64 @@
 #include<cstdio>
+#include<algorithm>
 #include<cmath>
-#define rg register
-#define rep(i,x,y) for(rg int i=(x);i<=(y);++i)
-#define per(i,x,y) for(rg int i=(x);i>=(y);--i)
-using std::fabs;
-const int N=20+1,UNBOUNDED=0,INFEASIBLE=1,CORRECT=2;
+#define rep(i,x,y) for(int i=(x);i<=(y);++i)
+#define per(i,x,y) for(int i=(x);i>=(y);--i)
+using std::swap;
 typedef double real;
-const real eps=1e-8,inf=1e100;
-inline real read(){double x;scanf("%lf",&x);return x;}
-inline void swap(int&a,int&b){int t=a;a=b;b=t;}
-int n,m,t,id[N<<1];
-real a[N][N];
-void pivot(int x,int y){
-	swap(id[m+x],id[y]);
-	rep(j,0,m)if(j!=y)a[x][j]/=a[x][y];a[x][y]=1/a[x][y];
-	rep(i,0,n)if(i!=x&&fabs(a[i][y])>eps){
-		rep(j,0,m)if(j!=y)a[i][j]-=a[x][j]*a[i][y];a[i][y]*=-a[x][y];
+const int N=20+5;
+const real eps=1e-8,inf=1e20;
+int n,m,t;
+namespace Simplex{
+	const int OK=0,UNBOUNDED=1,INFEASIBLE=2;
+	int n,m,id[N<<1];
+	real a[N][N];
+	void init(int _n,int _m){
+		n=_n;m=_m;
 	}
-}
-int simplex(){
-	rep(i,1,n+m)id[i]=i;
-	while(1){
-		int x=0,y=0;real mn=0;
-		rep(i,1,n)if(a[i][0]<mn-eps)x=i,mn=a[i][0];if(!x)break;
-		rep(j,1,m)if(a[x][j]<-eps)y=j;if(!y)return INFEASIBLE;
-		pivot(x,y);
+	void pivot(int x,int y){
+		swap(id[m+x],id[y]);
+		rep(i,0,m)if(i!=y)a[x][i]/=a[x][y];a[x][y]=1/a[x][y];
+		rep(i,0,n)if(i!=x&&fabs(a[i][y])>eps){
+			rep(j,0,m)if(j!=y)a[i][j]-=a[i][y]*a[x][j];a[i][y]=-a[i][y]*a[x][y];
+		}
 	}
-	while(1){
-		int x=0,y=0;real mn=inf;
-		rep(j,1,m)if(a[0][j]>eps){y=j;break;}if(!y)break;
-		rep(i,1,n)if(a[i][y]>eps&&a[i][0]/a[i][y]<mn-eps)x=i,mn=a[i][0]/a[i][y];if(!x)return UNBOUNDED;
-		pivot(x,y);
+	int simplex(){
+		rep(i,1,n+m)id[i]=i;
+		while(1){
+			int x=0,y=0;real mn=0;
+			rep(i,1,n)if(a[i][0]<mn-eps)x=i,mn=a[i][0];if(!x)break;
+			rep(j,1,m)if(a[x][j]<-eps)y=j;if(!y)return INFEASIBLE;
+			pivot(x,y);
+		}
+		while(1){
+			int x=0,y=0;real mn=inf;
+			rep(j,1,m)if(a[0][j]>eps){y=j;break;}if(!y)break;
+			rep(i,1,n)if(a[i][y]>eps&&a[i][0]/a[i][y]<mn)x=i,mn=a[i][0]/a[i][y];if(!x)return UNBOUNDED;
+			pivot(x,y);
+		}
+		return OK;
 	}
-	return CORRECT;
-}
+	real ans[N];
+	void solve(){
+		int sign=Simplex::simplex();
+		if(sign==UNBOUNDED)puts("Unbounded");
+		if(sign==INFEASIBLE)puts("Infeasible");
+		if(sign==OK){
+			printf("%.10lf\n",-a[0][0]);
+			if(!t)return;
+			rep(i,1,n)if(id[m+i]<=m)ans[id[m+i]]=a[i][0];
+			rep(i,1,m)printf("%.10lf ",ans[i]);
+		}
+	}
+};
 int main(){
 	scanf("%d%d%d",&n,&m,&t);
-	swap(n,m);
-	rep(i,1,m)a[0][i]=read();
-	rep(i,1,n){
-		rep(j,1,m)a[i][j]=read();
-		a[i][0]=read();
+	Simplex::init(m,n);
+	rep(i,1,n)scanf("%lf",&Simplex::a[0][i]);
+	rep(i,1,m){
+		rep(j,1,n)scanf("%lf",&Simplex::a[i][j]);
+		scanf("%lf",&Simplex::a[i][0]);
 	}
-	int k=simplex();
-	if(k==UNBOUNDED)puts("Unbounded");
-	if(k==INFEASIBLE)puts("Infeasible");
-	if(k==CORRECT){
-		printf("%.10lf\n",(double)-a[0][0]);
-		rep(i,1,m)a[0][i]=0;
-		rep(i,1,n)if(id[m+i]<=m)a[0][id[m+i]]=a[i][0];
-		if(t)rep(i,1,m)printf("%.10lf ",(double)a[0][i]);
-	}
+	Simplex::solve();
 	return 0;
 }
